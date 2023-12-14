@@ -22,7 +22,7 @@ pipeline {
             steps {
                 sh '''
                 kubectl apply -f ./Kubernetes
-                kubectl set image deployment/flask-deployment task1=andymac011171/duo-deploy-flask:v${BUILD_NUMBER}
+                kubectl set image deployment/flask-deployment flask=andymac011171/duo-deploy-flask:v${BUILD_NUMBER}
                 '''
             }
         }
