@@ -1,15 +1,18 @@
 apiVersion: v1
-kind: Service
+kind: ConfigMap
 metadata:
-  name: nginx-service
-spec:
-  type: LoadBalancer
-  selector:
-    app: nginx
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 80
+  name: nginx-config
+data:
+  nginx.conf: |
+    events {}
+    http {
+      server {
+        listen 80;
+        location / {
+          proxy_pass http://flask-app:5500;
+        }
+      }
+    }
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -44,3 +47,16 @@ spec:
         volumeMounts:
         - name: nginx-volume
           mountPath: /etc/nginx/
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
