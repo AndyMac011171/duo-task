@@ -24,15 +24,23 @@ spec:
       app: nginx
   strategy:
     rollingUpdate:
-      maxSurge: 20%
-      maxUnavailable: 20%
+      maxSurge: 10%
+      maxUnavailable: 25%
   template:
     metadata:
       labels:
         app: nginx
     spec:
-      containers:
-      - name: nginx-container
-        image: andymac011171/flask-nginx-duo:latest
-        ports:
+      volumes:
+      - name: nginx-volume
+        configMap:
+          name: nginx-config
+    containers:
+      - name: nginx
+        image: nginx:latest
+        imagePullPolicy: Always
+        ports: 
         - containerPort: 80
+        volumeMounts:
+        - name: nginx-volume
+          mountPath: /etc/nginx/
